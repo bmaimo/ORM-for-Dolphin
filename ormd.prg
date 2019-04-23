@@ -13,14 +13,12 @@ function Main()
    local oUsers := Users():New( oConnection, "users" ) // tableName
    local n, m
    
-   /*
    for n = 1 to oUsers:OrderBy( "lastname" ):Count()
       ? oUsers:oRs:LastName
       oUsers:Next()
    next
-   */
-   
-   ? oUsers:First:Invoices:Sum( "amount" )
+
+   ? oUsers:Find( 1 ):Invoices:Sum( "amount" )
    
    ? "Number of invoices for: " + AllTrim( oUsers:oRs:FirstName ) + " " + ;
                                   AllTrim( oUsers:oRs:LastName ) + " --> " + ;
@@ -123,7 +121,7 @@ CLASS HbModel
    METHOD New( oConnection, cTableName )
    
    METHOD Count() INLINE ::oRs:RecCount()
-   METHOD Find( nId ) INLINE ( ::oRs:Seek( nId, "id" ), Self )
+   METHOD Find( nId ) INLINE ( ::oRs:Find( { nId }, { "id" } ), Self )
    METHOD Where( cFieldName, uValue )
    METHOD First() INLINE ( ::oRs:GoTop(), Self )
    METHOD Next()  INLINE ( ::oRs:Skip( 1 ), Self )
@@ -178,7 +176,7 @@ METHOD Sum( cFieldName ) CLASS HbModel
    nResult = If( ::oRs:RecCount() > 0, ::oRs:FieldGet( 1 ), 0 )
    
    ::oRs = oOldRs
-
+   
 return nResult
                                      
 //----------------------------------------------------------------------------//
